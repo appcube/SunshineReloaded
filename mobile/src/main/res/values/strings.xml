@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Sunshine Reloaded</string>
+    <string name="api_url" translatable="false">http://api.openweathermap.org/data/2.5/</string>
+    <string name="error_while_loading">Error while loading data</string>
+    <string name="retry">Retry</string>
+    <string name="today">Today</string>
+</resources>
