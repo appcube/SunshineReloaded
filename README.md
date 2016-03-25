@@ -5,7 +5,7 @@ implemented using popular android libraries and [Kotlin](https://kotlinlang.org)
 * [RxAndroid](https://github.com/ReactiveX/RxAndroid)
 * [Retrofit 2](https://github.com/square/retrofit)
 
-You have to define you own openweathermap api key. Create `gradle.properties` file in the root folder and add your key:
+You have to define your own openweathermap api key. Create `gradle.properties` file in the root folder and add your key:
 ```
 WeatherApiKey=12345...
 ```
