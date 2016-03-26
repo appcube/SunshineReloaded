@@ -36,5 +36,5 @@ fun Long.unixTimestampAsShortDate() : String {
 }
 
 fun Double.asTemperature() : String {
-    return String.format("%.1f °C", this)
+    return "%.1f °C".format(this)
 }
