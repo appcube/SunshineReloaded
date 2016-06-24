@@ -1,45 +1,43 @@
 package info.appcube.sunshine.api
 
+import info.appcube.sunshine.call
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import rx.Observable
+import java.util.*
 
 /**
  * Created by artjom on 16.03.16.
  */
 
-object WeatherServiceContoller {
+object WeatherServiceContoller : ApiProtocol {
 
     lateinit var service: WeatherService;
 
-
     fun init(apiUrl : String, apiKey : String) {
-        var client = OkHttpClient().newBuilder()
-        var loggingInterceptor = HttpLoggingInterceptor()
+        val client = OkHttpClient().newBuilder()
+        val loggingInterceptor = HttpLoggingInterceptor()
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
 
         client.addInterceptor({ chain ->
-            var url = chain!!.request().url().newBuilder()
+            val url = chain!!.request().url().newBuilder()
                     .addEncodedQueryParameter("appid", apiKey)
-                    .addEncodedQueryParameter("lang", "en")
+                    .addEncodedQueryParameter("lang", Locale.getDefault().country)
                     .build()
-            var request = chain.request().newBuilder().url(url).build()
+            val request = chain.request().newBuilder().url(url).build()
             chain.proceed(request)
         })
         client.addInterceptor(loggingInterceptor)
         val retrofit = Retrofit.Builder()
                 .baseUrl(apiUrl)
                 .client(client.build())
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
         service = retrofit.create(WeatherService::class.java);
     }
 
-    fun loadData(city: String) : Observable<WeatherForecastResponse> {
-        return service.getWeatherForecast(location = city);
+    override fun loadData(city: String, onResponse: (WeatherForecastResponse?) -> Unit, onFailure: (Throwable?) -> Unit) {
+        service.getWeatherForecast(location = city).call(onResponse, onFailure)
     }
 }

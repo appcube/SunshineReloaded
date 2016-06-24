@@ -5,7 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.util.*
 
 /**
@@ -32,9 +36,22 @@ fun ImageView.setWeatherIcon(weatherId: Int, colored: Boolean = true) {
 }
 
 fun Long.unixTimestampAsShortDate() : String {
-    return DateFormat.getDateInstance(DateFormat.SHORT).format(Date(this * 1000))
+    val date = Date(this * 1000)
+    return SimpleDateFormat("EE", Locale.getDefault()).format(date) + ", " + DateFormat.getDateInstance(DateFormat.SHORT).format(date)
 }
 
 fun Double.asTemperature() : String {
     return "%.1f °C".format(this)
+}
+
+fun <T> Call<T>.call(success: (T?) -> Unit, error: (Throwable?) -> Unit) {
+    enqueue(object : Callback<T> {
+        override fun onResponse(call: Call<T>?, response: Response<T>?) {
+            success(response?.body())
+        }
+
+        override fun onFailure(call: Call<T>?, t: Throwable?) {
+            error(t)
+        }
+    })
 }

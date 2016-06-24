@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.list_item_forecast_today.view.*
 /**
  * Created by artjom on 23.03.16.
  */
-class ForecastAdapter(val data : WeatherForecastResponse) : RecyclerView.Adapter<ForecastAdapter.ViewHolder>() {
+class ForecastAdapter(val data : WeatherForecastResponse?) : RecyclerView.Adapter<ForecastAdapter.ViewHolder>() {
 
     enum class ViewType {
         TODAY, OTHER_DAY
@@ -24,7 +24,7 @@ class ForecastAdapter(val data : WeatherForecastResponse) : RecyclerView.Adapter
     class OtherDayViewHolder (view : View) : ViewHolder(view) {
         override fun bind(forecast: WeatherForecast) {
             if(forecast.weather.size > 0) {
-                var entry = forecast.weather[0];
+                val entry = forecast.weather[0];
                 itemView.icon.setWeatherIcon(entry.id, false)
                 itemView.description.text = entry.description;
             }
@@ -38,7 +38,7 @@ class ForecastAdapter(val data : WeatherForecastResponse) : RecyclerView.Adapter
     class TodayViewHolder (view : View) : ViewHolder(view) {
         override fun bind(forecast: WeatherForecast) {
             if(forecast.weather.size > 0) {
-                var entry = forecast.weather[0];
+                val entry = forecast.weather[0];
                 itemView.iconToday.setWeatherIcon(entry.id)
                 itemView.descriptionToday.text = entry.description;
             }
@@ -52,15 +52,15 @@ class ForecastAdapter(val data : WeatherForecastResponse) : RecyclerView.Adapter
     }
 
     override fun getItemCount(): Int {
-        return data.forecasts.count();
+        return data?.forecasts?.count() ?: 0;
     }
 
     override fun onBindViewHolder(holder: ForecastAdapter.ViewHolder?, position: Int) {
-        holder?.bind(data.forecasts[position])
+        holder?.bind(data!!.forecasts[position])
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ForecastAdapter.ViewHolder? {
-        var view = parent!!.inflate(if (viewType == ViewType.TODAY.ordinal)
+        val view = parent!!.inflate(if (viewType == ViewType.TODAY.ordinal)
             R.layout.list_item_forecast_today else R.layout.list_item_forecast)
 
         return if (viewType == ViewType.TODAY.ordinal) TodayViewHolder(view) else OtherDayViewHolder(view)
